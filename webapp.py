@@ -1,0 +1,154 @@
+from flask import Flask, request, send_file
+from reportlab.pdfgen import canvas
+import matplotlib.pyplot as plt
+import pandas as pd
+
+app = Flask(__name__)
+
+@app.route("/")
+def home():
+    return """
+<html>
+<head>
+
+<title>Lab Report Generator</title>
+
+<style>
+
+body {
+    font-family: Arial;
+    background-color: #f2f2f2;
+}
+
+.container {
+    width: 400px;
+    margin: 100px auto;
+    background: white;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px gray;
+}
+
+h1 {
+    text-align: center;
+}
+
+input {
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+    margin-bottom: 15px;
+}
+
+button {
+    width: 100%;
+    padding: 10px;
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    border-radius: 5px;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>Lab Report Generator</h1>
+
+<form method="post" action="/generate" enctype="multipart/form-data">
+
+Experimento:<br>
+<input name="experiment"><br>
+
+Estudiante:<br>
+<input name="student"><br>
+
+Fecha:<br>
+<input name="date"><br>
+
+Medición 1:<br>
+<input name="m1"><br>
+
+Medición 2:<br>
+<input name="m2"><br>
+
+Medición 3:<br>
+<input name="m3"><br>
+
+Subir datos (CSV):<br>
+<input type="file" name="file"><br>
+
+<button type="submit">Generar informe</button>
+
+</form>
+
+</div>
+
+</body>
+</html>
+"""
+
+
+@app.route("/generate", methods=["POST"])
+def generate():
+
+    experiment = request.form["experiment"]
+    student = request.form["student"]
+    date = request.form["date"]
+
+    file = request.files["file"]
+
+    # decidir si usar CSV o mediciones manuales
+    if file and file.filename != "":
+        data = pd.read_csv(file)
+        values = data.iloc[:,0].tolist()
+
+    else:
+        m1 = float(request.form["m1"])
+        m2 = float(request.form["m2"])
+        m3 = float(request.form["m3"])
+        values = [m1, m2, m3]
+
+    # crear gráfica
+    plt.figure(figsize=(6,4))
+    plt.plot(values)
+    plt.title("Resultados experimentales")
+    plt.xlabel("Medición")
+    plt.ylabel("Valor")
+
+    plt.savefig("graph.png")
+    plt.close()
+
+    # crear PDF
+    file_name = "report.pdf"
+    c = canvas.Canvas(file_name)
+
+    c.drawString(100,750,"LAB REPORT")
+    c.drawString(100,720,f"Experimento: {experiment}")
+    c.drawString(100,700,f"Estudiante: {student}")
+    c.drawString(100,680,f"Fecha: {date}")
+
+    c.drawString(100,640,"Introducción")
+    c.drawString(100,620,"Este informe describe el experimento realizado.")
+
+    c.drawString(100,580,"Conclusión")
+    c.drawString(100,560,"El experimento permitió comprender mejor el fenómeno.")
+
+    # insertar gráfica
+    c.drawImage("graph.png",100,350,width=400,height=200)
+
+    c.save()
+
+    return send_file(file_name, as_attachment=True)
+
+
+if __name__ == "__main__":
+    app.run(debug=True)

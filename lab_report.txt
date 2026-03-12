@@ -1,0 +1,18 @@
+
+LAB REPORT
+
+Experimento: 1
+Estudiante: Ana
+Fecha: 14/03/2026
+
+INTRODUCCIÓN
+Este informe describe el experimento realizado para analizar el comportamiento del sistema estudiado.
+
+METODOLOGÍA
+El experimento se realizó siguiendo el procedimiento establecido en el laboratorio.
+
+RESULTADOS
+Los resultados obtenidos permiten analizar el comportamiento del sistema.
+
+CONCLUSIÓN
+El experimento permitió comprender mejor el fenómeno estudiado.
