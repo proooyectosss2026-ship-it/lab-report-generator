@@ -22,7 +22,8 @@ body {
 }
 
 .container {
-    width: 400px;
+    width: 600px;
+    max-width: 90%;
     margin: 100px auto;
     background: white;
     padding: 30px;
@@ -142,7 +143,6 @@ def generate():
     if request.cookies.get("free_used") == "yes":
         return """
         <html>
-
         <body style="font-family:Arial;text-align:center;margin-top:100px">
 
         <h1>Free report already used</h1>
@@ -153,12 +153,13 @@ def generate():
 
         <p>Premium users can generate unlimited laboratory reports.</p>
 
+        <br>
+
         <button style="padding:15px;font-size:16px;background:#28a745;color:white;border:none;border-radius:5px">
         Upgrade to Premium – 5€
         </button>
 
         </body>
-
         </html>
         """
 
