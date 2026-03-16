@@ -1,7 +1,8 @@
-from flask import Flask, request, send_file
+from flask import Flask, request, send_file, make_response
 from reportlab.pdfgen import canvas
 import matplotlib.pyplot as plt
 import pandas as pd
+import os
 
 app = Flask(__name__)
 
@@ -11,7 +12,7 @@ def home():
 <html>
 <head>
 
-<title>Lab Report Generator</title>
+<title>Instant Lab Report Generator</title>
 
 <style>
 
@@ -31,6 +32,12 @@ body {
 
 h1 {
     text-align: center;
+}
+
+.subtitle{
+    text-align:center;
+    color:gray;
+    margin-bottom:20px;
 }
 
 input {
@@ -53,6 +60,18 @@ button:hover {
     background-color: #0056b3;
 }
 
+.features{
+    margin-top:30px;
+    font-size:14px;
+}
+
+.footer{
+    margin-top:30px;
+    text-align:center;
+    color:gray;
+    font-size:12px;
+}
+
 </style>
 
 </head>
@@ -61,7 +80,11 @@ button:hover {
 
 <div class="container">
 
-<h1>Lab Report Generator</h1>
+<h1>Instant Lab Report Generator</h1>
+
+<div class="subtitle">
+Generate a complete laboratory report in seconds
+</div>
 
 <form method="post" action="/generate" enctype="multipart/form-data">
 
@@ -90,6 +113,21 @@ Subir datos (CSV):<br>
 
 </form>
 
+<div class="features">
+
+<b>Features</b><br><br>
+
+• Automatic PDF report<br>
+• CSV data support<br>
+• Scientific format<br>
+• Ready for lab submission
+
+</div>
+
+<div class="footer">
+Generated automatically with Lab Report Generator
+</div>
+
 </div>
 
 </body>
@@ -99,6 +137,22 @@ Subir datos (CSV):<br>
 
 @app.route("/generate", methods=["POST"])
 def generate():
+
+    # comprobar si ya usó el informe gratuito
+    if request.cookies.get("free_used") == "yes":
+        return """
+        <html>
+        <body style="font-family:Arial;text-align:center;margin-top:100px">
+
+        <h1>Free report already used</h1>
+
+        <p>You have already generated your free report.</p>
+
+        <p>Upgrade to premium to generate unlimited reports.</p>
+
+        </body>
+        </html>
+        """
 
     experiment = request.form["experiment"]
     student = request.form["student"]
@@ -127,8 +181,11 @@ def generate():
     plt.savefig("graph.png")
     plt.close()
 
+    # nombre del archivo
+    safe_experiment = experiment.replace(" ","_")
+    file_name = f"lab_report_{safe_experiment}.pdf"
+
     # crear PDF
-    file_name = "report.pdf"
     c = canvas.Canvas(file_name)
 
     c.drawString(100,750,"LAB REPORT")
@@ -147,11 +204,13 @@ def generate():
 
     c.save()
 
-    return send_file(file_name, as_attachment=True)
+    # enviar PDF y marcar cookie
+    response = make_response(send_file(file_name, as_attachment=True))
+    response.set_cookie("free_used","yes")
 
+    return response
 
-import os
 
 if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 10000))
-    app.run(host="0.0.0.0", port=port)
+    port = int(os.environ.get("PORT",10000))
+    app.run(host="0.0.0.0",port=port)
