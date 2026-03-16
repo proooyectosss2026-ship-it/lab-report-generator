@@ -19,12 +19,22 @@ def home():
 body {
     font-family: Arial;
     background-color: #f2f2f2;
+    margin:0;
+}
+
+.header{
+    background:#007BFF;
+    color:white;
+    padding:20px;
+    text-align:center;
+    font-size:22px;
+    font-weight:bold;
 }
 
 .container {
     width: 600px;
     max-width: 90%;
-    margin: 100px auto;
+    margin: 80px auto;
     background: white;
     padding: 30px;
     border-radius: 10px;
@@ -78,6 +88,10 @@ button:hover {
 </head>
 
 <body>
+
+<div class="header">
+Instant Lab Report Generator
+</div>
 
 <div class="container">
 
