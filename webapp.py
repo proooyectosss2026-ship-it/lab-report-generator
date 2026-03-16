@@ -142,6 +142,7 @@ def generate():
     if request.cookies.get("free_used") == "yes":
         return """
         <html>
+
         <body style="font-family:Arial;text-align:center;margin-top:100px">
 
         <h1>Free report already used</h1>
@@ -150,7 +151,14 @@ def generate():
 
         <p>Upgrade to premium to generate unlimited reports.</p>
 
+        <br>
+
+        <button style="padding:15px;font-size:16px;background:#28a745;color:white;border:none;border-radius:5px">
+        Upgrade to Premium
+        </button>
+
         </body>
+
         </html>
         """
 
