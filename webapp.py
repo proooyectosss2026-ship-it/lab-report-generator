@@ -151,10 +151,10 @@ def generate():
 
         <p>Upgrade to premium to generate unlimited reports.</p>
 
-        <br>
+        <p>Premium users can generate unlimited laboratory reports.</p>
 
         <button style="padding:15px;font-size:16px;background:#28a745;color:white;border:none;border-radius:5px">
-        Upgrade to Premium
+        Upgrade to Premium – 5€
         </button>
 
         </body>
